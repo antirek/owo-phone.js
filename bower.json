@@ -1,0 +1,23 @@
+{
+  "name": "owo-phone.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/antirek/owo-phone.js",
+  "authors": [
+    "Sergey Dmitriev <serge.dmitriev@gmail.com>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "sip.js": "~0.6.2"
+  }
+}
