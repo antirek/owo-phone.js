@@ -1,11 +1,10 @@
 
 var session;
 
-var endButton = document.getElementById('endCall');
+var endButton = document.getElementById('callEndButton');
 
 endButton.addEventListener("click", function () {
-    session.bye();
-    alert("Call Ended");
+    session.bye();  
 }, false);
 
 
@@ -17,7 +16,7 @@ var config = {
     password: 'password',
     register: true,
     hackIpInContact: true,
-    stunServers: "stun.iptel.org",
+    stunServers: "",
     traceSip: true,
     hackViaTcp: true,
     noAnswerTimeout: 120,
@@ -39,14 +38,15 @@ var options = {
 };
 
 
-userAgent.on('invite', function (session2) {
-    session2.accept();
+userAgent.on('invite', function (incomingSession) {
+    session = incomingSession;
+    session.accept();
 });
 
 
 var callStartButton = document.getElementById('callStartButton');
 
 callStartButton.addEventListener("click", function () {
-    session = userAgent.invite('1061', options);
-    alert("make call");
+    var number = $('#inputNumber').val();
+    session = userAgent.invite(number, options);
 }, false);
