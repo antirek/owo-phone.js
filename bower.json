@@ -18,6 +18,8 @@
     "tests"
   ],
   "dependencies": {
-    "sip.js": "~0.6.2"
+    "sip.js": "~0.6.2",
+    "bootstrap": "~3.2.0",
+    "jstorage": "~0.4.12"
   }
 }
