@@ -8,21 +8,14 @@ endButton.addEventListener("click", function () {
 }, false);
 
 
+var host = '192.168.241.67';
+
 var config = {
-    displayName: 'Sergey',
-    uri: '1060@192.168.1.37',
-    wsServers: 'ws://192.168.1.37:8088/ws',
+    uri: '1060@' + host,
+    wsServers: 'ws://'+ host +':8088/ws',
     authorizationUser: '1060',
-    password: 'password',
-    register: true,
-    hackIpInContact: true,
-    stunServers: "",
-    traceSip: true,
-    hackViaTcp: true,
-    noAnswerTimeout: 120,
-    log: {
-        builtinEnabled: true,
-    }
+    password: 'password',    
+    hackIpInContact: true    
 };
 
 
@@ -34,6 +27,14 @@ var options = {
             audio: true,
             video: false,
         },
+        render: {
+            remote: {
+                audio: document.getElementById('localAudio'),
+            },
+            local: {
+                audio: document.getElementById('localAudio'),
+            }
+        }
     },
 };
 
@@ -48,5 +49,5 @@ var callStartButton = document.getElementById('callStartButton');
 
 callStartButton.addEventListener("click", function () {
     var number = $('#inputNumber').val();
-    session = userAgent.invite(number, options);
+    session = userAgent.invite('sip:'+ number + '@' + host, options);
 }, false);

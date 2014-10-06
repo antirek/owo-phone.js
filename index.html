@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Owo phone</title>
+        <title>Owo-phone.js</title>
         <meta content="width=device-width, initial-scale=0.5" name="viewport" />
 
         <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css" media="screen" />
@@ -11,10 +11,15 @@
         <script src="lib/jstorage/jstorage.js"></script>
         <script src="lib/sip.js/dist/sip.js"></script>
     </head>
+
     <body>
-        <input type="text" placeholder="input number" class="form-control" id="inputNumber" value="1061"/>
+        <audio id="localAudio"></audio>
+
+        <input type="text" placeholder="input number" class="form-control" id="inputNumber" value="1061" />
+
         <button id="callEndButton" class="btn btn-default">End</button>
         <button id="callStartButton" class="btn btn-primary">Call</button>
+        
         <script src="includes/app.js"></script>
     </body>
 </html>
