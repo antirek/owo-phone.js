@@ -8,7 +8,7 @@ endButton.addEventListener("click", function () {
 }, false);
 
 
-var host = '192.168.241.67';
+var host = '192.168.1.37';
 
 var config = {
     uri: '1060@' + host,
@@ -41,7 +41,10 @@ var options = {
 
 userAgent.on('invite', function (incomingSession) {
     session = incomingSession;
-    session.accept();
+    if(confirm('ok?')){
+        session.accept();    
+    }
+    
 });
 
 
