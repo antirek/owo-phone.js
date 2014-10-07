@@ -8,14 +8,14 @@ endButton.addEventListener("click", function () {
 }, false);
 
 
-var host = '192.168.1.37';
+var host = '192.168.241.67';
 
 var config = {
     uri: '1060@' + host,
     wsServers: 'ws://'+ host +':8088/ws',
     authorizationUser: '1060',
-    password: 'password',    
-    hackIpInContact: true    
+    password: 'password',
+    hackIpInContact: true
 };
 
 
