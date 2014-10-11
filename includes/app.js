@@ -14,8 +14,8 @@ var config = {
     uri: '1060@' + host,
     wsServers: 'ws://'+ host +':8088/ws',
     authorizationUser: '1060',
-    password: 'password',    
-    hackIpInContact: true    
+    password: 'password',
+    hackIpInContact: true
 };
 
 
@@ -42,9 +42,8 @@ var options = {
 userAgent.on('invite', function (incomingSession) {
     session = incomingSession;
     if(confirm('ok?')){
-        session.accept();    
+        session.accept();   
     }
-    
 });
 
 
@@ -53,4 +52,18 @@ var callStartButton = document.getElementById('callStartButton');
 callStartButton.addEventListener("click", function () {
     var number = $('#inputNumber').val();
     session = userAgent.invite('sip:'+ number + '@' + host, options);
+}, false);
+
+
+
+var muteButton = document.getElementById('muteButton');
+
+muteButton.addEventListener("click", function () {
+    session.mute();
+}, false);
+
+var unmuteButton = document.getElementById('unmuteButton');
+
+unmuteButton.addEventListener("click", function () {
+    session.unmute();
 }, false);
