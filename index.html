@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        
         <title>Owo-phone.js</title>
         <meta content="width=device-width, initial-scale=0.5" name="viewport" />
 
@@ -10,19 +11,24 @@
         <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="lib/jstorage/jstorage.js"></script>
         <script src="lib/sip.js/dist/sip.js"></script>
+
     </head>
 
     <body>
+        
         <audio id="localAudio" style="display:none;"></audio>
+        <div id="isRegistered"></div>
+        <div id="isConnected"></div>
 
         <input type="text" placeholder="input number" class="form-control" id="inputNumber" value="89135292926" />
 
         <button id="callEndButton" class="btn btn-default">End</button>
         <button id="callStartButton" class="btn btn-primary">Call</button>
         <br/>
-         <button id="muteButton" class="btn btn-default">Mute</button>
+        <button id="muteButton" class="btn btn-default">Mute</button>
         <button id="unmuteButton" class="btn btn-default">Unmute</button>
         
         <script src="includes/app.js"></script>
+
     </body>
 </html>

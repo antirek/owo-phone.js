@@ -7,7 +7,6 @@ endButton.addEventListener("click", function () {
     session.bye();  
 }, false);
 
-
 var host = '192.168.1.37';
 
 var config = {
@@ -16,30 +15,43 @@ var config = {
     authorizationUser: '1060',
     password: 'password',
     hackIpInContact: true,
+    register: true,
     log:{
         builtinEnabled: false,
-    }
+    },
+    stunServers: [
+        "stun.ideasip.com",
+        "stun.iptel.org",
+        "stun.rixtelecom.se",
+        "stun.schlund.de",
+        "stunserver.org",
+        "stun.stunprotocol.org:3478",
+        "stun.voiparound.com",
+        "stun.voipbuster.com",
+        "stun.voipstunt.com",
+        "stun.turnservers.com:3478"
+    ],
+    turnServers: [],
 };
 
 
 var userAgent = new SIP.UA(config);
 
-var options = {
-    media: {
-        constraints: {
-            audio: true,
-            video: false,
-        },
-        render: {
-            remote: {
-                audio: document.getElementById('localAudio'),
-            },
-            local: {
-                audio: document.getElementById('localAudio'),
-            }
-        }
-    },
-};
+userAgent.on('registered', function(){
+    $('#isRegistered').html(userAgent.isRegistered());
+});
+
+userAgent.on('connected', function(){
+    $('#isConnected').html(userAgent.isConnected());
+});
+
+userAgent.on('unregistered', function(){
+    $('#isRegistered').html(userAgent.isRegistered());
+});
+
+userAgent.on('disconnected', function(){
+    $('#isConnected').html(userAgent.isConnected());
+});
 
 
 userAgent.on('invite', function (incomingSession) {
@@ -56,7 +68,26 @@ userAgent.on('invite', function (incomingSession) {
 var callStartButton = document.getElementById('callStartButton');
 
 callStartButton.addEventListener("click", function () {
+
+    var options = {
+        media: {
+            constraints: {
+                audio: true,
+                video: false,
+            },
+            render: {
+                remote: {
+                    audio: document.getElementById('localAudio'),
+                },
+                local: {
+                    audio: document.getElementById('localAudio'),
+                }
+            }
+        },
+    };
+
     var number = $('#inputNumber').val();
+
     session = userAgent.invite('sip:'+ number + '@' + host, options);
     console.log('call start');
     
@@ -92,16 +123,15 @@ callStartButton.addEventListener("click", function () {
 }, false);
 
 
-
 var muteButton = document.getElementById('muteButton');
 
 muteButton.addEventListener("click", function () {
     session.mute();
 }, false);
 
+
 var unmuteButton = document.getElementById('unmuteButton');
 
 unmuteButton.addEventListener("click", function () {
     session.unmute();
 }, false);
-
