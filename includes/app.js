@@ -13,10 +13,10 @@ var config = {
     uri: '1060@' + host,
     wsServers: 'ws://'+ host +':8088/ws',
     authorizationUser: '1060',
-    password: 'password',
+    password: 'qwerty',
     hackIpInContact: true,
     register: true,
-    log:{
+    log: {
         builtinEnabled: false,
     },
     stunServers: [
@@ -30,8 +30,7 @@ var config = {
         "stun.voipbuster.com",
         "stun.voipstunt.com",
         "stun.turnservers.com:3478"
-    ],
-    turnServers: [],
+    ],    
 };
 
 
