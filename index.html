@@ -10,18 +10,29 @@
         <script src="lib/jquery/dist/jquery.js"></script>
         <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
 
+        <script src="lib/angular/angular.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-route.min.js"></script>
         <script src="lib/jstorage/jstorage.js"></script>
         <script src="lib/sip.js/dist/sip.js"></script>
+        <script src="includes/phone.js"></script>
 
     </head>
 
     <body>
         
+    <div ng-app="owo-phone">
+      
+      <div ng-view></div>
+    
+    </div>
+
+    <script src="includes/project.js"></script>
+
+
         <audio id="localAudio" style="display:none;"></audio>
+
         <div id="isRegistered"></div>
         <div id="isConnected"></div>
-
-        
 
         <button id="callEndButton" class="btn btn-default">End</button>
         <button id="muteButton" class="btn btn-default">Mute</button>
@@ -33,7 +44,7 @@
         <div class="form-inline" role="form">
         <div class="input-group">
            
-           <input type="text" id="inputNumber" class="form-control" value="89135292926">
+           <input type="text" id="inputNumber" class="form-control" value="1063">
 
            <span class="input-group-btn">
               <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<a class='btn btn-default'>1</a> <a class='btn btn-default'>2</a> <a class='btn btn-default'>3</a> <br/> <a class='btn btn-default'>4</a> <a class='btn btn-default'>5</a> <a class='btn btn-default'>6</a> <br/> <a class='btn btn-default'>7</a> <a class='btn btn-default'>8</a> <a class='btn btn-default'>9</a> <br/> <a class='btn btn-default'>*</a> <a class='btn btn-default'>0</a> <a class='btn btn-default'>#</a> " id="numpad" >

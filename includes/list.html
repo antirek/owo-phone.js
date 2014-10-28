@@ -1,0 +1,15 @@
+<input type="text" ng-model="search" class="search-query form-control" placeholder="Search">
+<span>{{phone.isIdle()}}</span>
+<span>{{phone.status}}</span>
+<span>{{phone.isRegistered()}}</span>
+<span>{{phone.line.isConnected()}}</span>
+
+<a href="" ng-click="phone.call();" ng-show="phone.isIdle()" class="btn btn-primary">
+    <i class="icon-plus-sign"></i>
+    Call
+</a>
+
+<a href="" ng-click="phone.release();" ng-show="!phone.isIdle()" class="btn btn-danger">
+    <i class="icon-plus-sign"></i>
+    End
+</a>
