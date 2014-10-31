@@ -45,7 +45,21 @@ angular.module('owo-phone', ['ngRoute'])
     };
 
     var phone = new Phone();
-    phone.init(config);
+
+    phone.init(host, config);
+
+    phone.line.on('registered', function(){
+        $scope.$apply(function(){
+            $scope.phone.line.isRegistered();
+        });            
+    });
+
+    phone.line.on('connected', function(){
+        $scope.$apply(function(){
+            $scope.phone.line.isConnected();
+        });            
+    });
+    
     $scope.phone = phone;
-    $scope.phone.line = phone.line;
+    $scope.line = phone.line;
 })

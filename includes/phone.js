@@ -3,6 +3,8 @@ function Phone(){
     var phone = function(){
 
         this.line = null;
+        this.number = '2410011';
+        this.host = '';
 
         this.session = null;
 
@@ -22,11 +24,7 @@ function Phone(){
         this.line = new SIP.UA(config);
     }
 
-    phone.prototype.initEventsLine = function(){
-
-        this.line.on('registered', function(){
-            alert(this.line.isRegistered());
-        });
+    phone.prototype.initEventsLine = function(){        
 
         this.line.on('invite', function (incomingSession) {
             this.status = this.STATUS_RINGING;
@@ -44,14 +42,34 @@ function Phone(){
     
 
     phone.prototype.call = function() {
+        var options = {
+            media: {
+                constraints: {
+                    audio: true,
+                    video: false,
+                },
+                render: {
+                    remote: {
+                        audio: document.getElementById('localAudio'),
+                    },
+                    local: {
+                        audio: document.getElementById('localAudio'),
+                    }
+                }
+            },
+        };
+
+        this.session = this.line.invite('sip:'+ this.number + '@' + this.host, options);
         this.status = this.STATUS_RINGING;
     };
 
     phone.prototype.release = function() {
+        this.session.bye();
         this.status = this.STATUS_IDLE;
     };
 
-    phone.prototype.init = function(config){
+    phone.prototype.init = function(host, config){
+        this.host = host;
         this.initLine(config);
         this.initEventsLine();
         this.line.register();
