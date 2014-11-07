@@ -54,6 +54,13 @@ angular.module('owo-phone', ['ngRoute'])
         });            
     });
 
+    phone.on('changeStatus', function(){
+        alert('asd');
+        $scope.$apply(function(){
+            $scope.phone.getStatus();
+        })
+    })
+
     phone.line.on('connected', function(){
         $scope.$apply(function(){
             $scope.phone.line.isConnected();
