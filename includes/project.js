@@ -24,7 +24,7 @@ $(function(){
             "stun.voipbuster.com",
             "stun.voipstunt.com",
             "stun.turnservers.com:3478"
-        ],    
+        ],
     };
 
     Phone = new phone();

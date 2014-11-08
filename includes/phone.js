@@ -38,13 +38,13 @@ phone.prototype.initEventsLine = function(){
         $("#registered").html('registered!');
     });
 
-    this.line.on('invite', function (incomingSession) {
-        this.status = this.STATUS_RINGING;
+    this.line.on('invite', function (incomingSession) {        
         this.session = incomingSession;
+        
+        var number_show = this.session.remoteIdentity.displayName;
 
-        if(confirm('ok?')){
-            this.session.accept();   
-            this.status = this.STATUS_CALL;
+        if(confirm(number_show + ' ok?')){
+            this.session.accept();
         }else{
             this.session.reject();
         }
