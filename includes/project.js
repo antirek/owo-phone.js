@@ -1,22 +1,5 @@
-angular.module('owo-phone', ['ngRoute'])
 
-.factory('Phone', function(){
-    return Phone();
-})
- 
-
-.config(function($routeProvider) {
-  $routeProvider
-    .when('/', {
-      controller:'ListCtrl',
-      templateUrl:'/includes/list.html'
-    })
-    .otherwise({
-      redirectTo:'/'
-    });
-})
- 
-.controller('ListCtrl', function($scope, Phone) {
+$(function(){
 
     var host = 'localhost';
 
@@ -44,29 +27,15 @@ angular.module('owo-phone', ['ngRoute'])
         ],    
     };
 
-    var phone = new Phone();
+    Phone = new phone();
 
-    phone.init(host, config);
+    Phone.init(host, config);
 
-    phone.line.on('registered', function(){
-        $scope.$apply(function(){
-            $scope.phone.line.isRegistered();
-        });            
+    $("#call").on('click', function(e){
+        Phone.call($("#number").val());
     });
 
-    phone.on('changeStatus', function(){
-        alert('asd');
-        $scope.$apply(function(){
-            $scope.phone.getStatus();
-        })
-    })
-
-    phone.line.on('connected', function(){
-        $scope.$apply(function(){
-            $scope.phone.line.isConnected();
-        });            
+    $("#end").on('click', function(e){
+        Phone.end();
     });
-    
-    $scope.phone = phone;
-    $scope.line = phone.line;
-})
+});
