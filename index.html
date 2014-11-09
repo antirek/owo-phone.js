@@ -20,47 +20,33 @@
 
     <body>
     <div class="container">
+        <div class="row" style="min-height:150px;">
+            <div class="col-md-4 col-md-offset-4">
+                
+            </div>
+        </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 col-md-offset-4">
                 
                 <audio id="localAudio" style="display:none;"></audio>
 
                 <div class="well">
                     <div class="row">
                         <div class="col-md-12">
+                            <h3>Owo-phone.js</h3>
                             <span id="status"></span>
                             <span id="registered"></span>
-                            <span id="display"></span>
-                            <a href='' id="settings" class="" data-toggle="modal" data-target="#myModal">
-                                <span class="glyphicon glyphicon-cog"></span>
-                            </a>
+                            <div id="display"></div>
+                            
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="form-inline" role="form">
-                                                    
+                            <div class="form-inline" role="form">                                
 
-                                <div class="input-group">
-
-                                    <input id="number" type="text" value="89135292926" class="search-query form-control">
-
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="bottom" data-content="<a class='btn btn-default'>1</a> <a class='btn btn-default'>2</a> <a class='btn btn-default'>3</a> <br/> <a class='btn btn-default'>4</a> <a class='btn btn-default'>5</a> <a class='btn btn-default'>6</a> <br/> <a class='btn btn-default'>7</a> <a class='btn btn-default'>8</a> <a class='btn btn-default'>9</a> <br/> <a class='btn btn-default'>*</a> <a class='btn btn-default'>0</a> <a class='btn btn-default'>#</a>" id="numpad" >
-                                            <span class="glyphicon glyphicon-th"></span>
-                                        </button>
-                                    </span>
-
-                                </div>
-                                
-                                <script>
-                                        $('#numpad').popover({
-                                            html: true,
-                                            title: 'Numpad'
-                                        });
-                                </script>
-
+                                <input id="number" type="text" value="89135292926" class="search-query form-control">
+                                    
                                 <a id="call" class="btn btn-primary">
                                     <i class="icon-plus-sign"></i>
                                     Call
@@ -70,6 +56,10 @@
                                     <i class="icon-plus-sign"></i>
                                     End
                                 </a>
+
+                                <a href='' id="settings" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                                <span class="glyphicon glyphicon-cog"></span>
+                            </a>
                             </div>
                         </div>
                     </div>
@@ -80,8 +70,6 @@
         </div>
     </div>
 
-
-   
 
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -10,8 +10,6 @@ $(function(){
         Phone.end();
     });
 
-    
-
     $("#saveSettings").on('click', function(){
         console.log('save!');
         $.jStorage.set('host', $('#host').val());
