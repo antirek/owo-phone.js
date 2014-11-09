@@ -1,13 +1,49 @@
+var Phone = null;
 
 $(function(){
 
-    var host = 'localhost';
+    $("#call").on('click', function(e){
+        Phone.call($("#number").val());
+    });
+
+    $("#end").on('click', function(e){
+        Phone.end();
+    });
+
+    
+
+    $("#saveSettings").on('click', function(){
+        console.log('save!');
+        $.jStorage.set('host', $('#host').val());
+        $.jStorage.set('user', $('#user').val());
+        $.jStorage.set('password', $('#password').val());
+    });
+    
+    function initFromStorage(){
+        $("#host").val($.jStorage.get('host'));
+        $("#user").val($.jStorage.get('user'));
+        $("#password").val($.jStorage.get('password'));
+
+        return {
+            host: $.jStorage.get('host'),
+            user: $.jStorage.get('user'),
+            password: $.jStorage.get('password')
+        };        
+    }
+
+    var creds = initFromStorage();
+
+    var host = creds.host || 'localhost';
+    var user = creds.user || '1060';
+    var password = creds.password || 'password';
+
+    console.log(host, user, password);
 
     var config = {
-        uri: '1060@' + host,
+        uri: user + '@' + host,
         wsServers: 'ws://'+ host +':8088/ws',
-        authorizationUser: '1060',
-        password: 'password',
+        authorizationUser: user,
+        password: password,
         hackIpInContact: true,
         register: false,
         log: {
@@ -31,11 +67,6 @@ $(function(){
 
     Phone.init(host, config);
 
-    $("#call").on('click', function(e){
-        Phone.call($("#number").val());
-    });
+    
 
-    $("#end").on('click', function(e){
-        Phone.end();
-    });
 });

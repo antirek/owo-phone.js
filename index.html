@@ -31,7 +31,7 @@
                             <span id="status"></span>
                             <span id="registered"></span>
                             <span id="display"></span>
-                            <a href='' id="settings" class="">
+                            <a href='' id="settings" class="" data-toggle="modal" data-target="#myModal">
                                 <span class="glyphicon glyphicon-cog"></span>
                             </a>
                         </div>
@@ -80,6 +80,53 @@
         </div>
     </div>
 
+
+   
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Settings</h4>
+      </div>
+      <div class="modal-body">
+        
+
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label for="host" class="col-sm-2 control-label">Host</label>
+            <div class="col-sm-10">
+              <input type="string" class="form-control" id="host" placeholder="Host">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="user" class="col-sm-2 control-label">User</label>
+            <div class="col-sm-10">
+              <input type="string" class="form-control" id="user" placeholder="User">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+              <input type="string" class="form-control" id="password" placeholder="Password">
+            </div>
+          </div>
+         
+          
+        </form>
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveSettings">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
         
 
     </body>
