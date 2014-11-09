@@ -17,6 +17,9 @@ $(function(){
         $.jStorage.set('host', $('#host').val());
         $.jStorage.set('user', $('#user').val());
         $.jStorage.set('password', $('#password').val());
+
+        $('#myModal').modal('hide');
+        initPhone();      
     });
     
     function initFromStorage(){
@@ -31,42 +34,42 @@ $(function(){
         };        
     }
 
-    var creds = initFromStorage();
+    function initPhone(){
+        var creds = initFromStorage();
 
-    var host = creds.host || 'localhost';
-    var user = creds.user || '1060';
-    var password = creds.password || 'password';
+        var host = creds.host || 'localhost';
+        var user = creds.user || '1060';
+        var password = creds.password || 'password';
 
-    console.log(host, user, password);
+        console.log(host, user, password);
 
-    var config = {
-        uri: user + '@' + host,
-        wsServers: 'ws://'+ host +':8088/ws',
-        authorizationUser: user,
-        password: password,
-        hackIpInContact: true,
-        register: false,
-        log: {
-            builtinEnabled: false,
-        },
-        stunServers: [
-            "stun.ideasip.com",
-            "stun.iptel.org",
-            "stun.rixtelecom.se",
-            "stun.schlund.de",
-            "stunserver.org",
-            "stun.stunprotocol.org:3478",
-            "stun.voiparound.com",
-            "stun.voipbuster.com",
-            "stun.voipstunt.com",
-            "stun.turnservers.com:3478"
-        ],
-    };
+        var config = {
+            uri: user + '@' + host,
+            wsServers: 'ws://'+ host +':8088/ws',
+            authorizationUser: user,
+            password: password,
+            hackIpInContact: true,
+            register: false,
+            log: {
+                builtinEnabled: false,
+            },
+            stunServers: [
+                "stun.voipstunt.com",
+                "stun.ideasip.com",
+                "stun.iptel.org",
+                "stun.rixtelecom.se",
+                "stun.schlund.de",
+                "stunserver.org",
+                "stun.stunprotocol.org:3478",
+                "stun.voiparound.com",
+                "stun.voipbuster.com",            
+                "stun.turnservers.com:3478"
+            ],
+        };
 
-    Phone = new phone();
-
-    Phone.init(host, config);
-
+        Phone = new phone();
+        Phone.init(host, config);
+    }
     
-
+    initPhone();
 });
