@@ -51,8 +51,8 @@ $(function(){
             log: {
                 builtinEnabled: false,
             },
-            stunServers: [                                
-                "stun.ideasip.com",
+            stunServers: [                
+                "195.130.214.17"
             ],
         };
 
