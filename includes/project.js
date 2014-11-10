@@ -51,16 +51,8 @@ $(function(){
             log: {
                 builtinEnabled: false,
             },
-            stunServers: [                
-                "stunserver.org",
+            stunServers: [                                
                 "stun.ideasip.com",
-                "stun.iptel.org",
-                "stun.rixtelecom.se",
-                "stun.schlund.de",
-                "stun.stunprotocol.org:3478",
-                "stun.voiparound.com",
-                "stun.voipbuster.com",            
-                "stun.turnservers.com:3478"
             ],
         };
 
