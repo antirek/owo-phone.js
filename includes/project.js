@@ -43,7 +43,7 @@ $(function(){
 
         var config = {
             uri: user + '@' + host,
-            wsServers: 'ws://'+ host +':8088/ws',
+            wsServers: 'ws://'+ host +':5066',
             authorizationUser: user,
             password: password,
             hackIpInContact: true,
@@ -51,12 +51,7 @@ $(function(){
             log: {
                 builtinEnabled: false,
             },
-            stunServers: [                
-                "stun.ideasip.com",
-                "stun.iptel.org",
-                "stun.rixtelecom.se",
-                "stun.schlund.de",
-                "stunserver.org",
+            stunServers: [                                
                 "stun.stunprotocol.org:3478",
                 "stun.voiparound.com",
                 "stun.voipbuster.com",            
