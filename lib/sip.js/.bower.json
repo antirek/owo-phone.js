@@ -1,6 +1,6 @@
 {
   "name": "sip.js",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "authors": [
     "Will Mitchell <will@onsip.com>",
     "James Criscuolo <james@onsip.com>",
@@ -28,13 +28,13 @@
     "src",
     "sip-*.*"
   ],
-  "_release": "0.6.4",
+  "_release": "0.7.0",
   "_resolution": {
     "type": "version",
-    "tag": "0.6.4",
-    "commit": "209fb9bb50f1918522d37a002b83f21abd6946ab"
+    "tag": "0.7.0",
+    "commit": "dae797012e65e0fbeec3bad83a2cfc3cfaa51424"
   },
   "_source": "git://github.com/onsip/SIP.js.git",
-  "_target": "~0.6.4",
+  "_target": "~0.7.0",
   "_originalSource": "sip.js"
 }
