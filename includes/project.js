@@ -1,67 +1,85 @@
 var Phone = null;
 
-$(function(){
+$(function () {
 
-    $("#call").on('click', function(e){
+    $("#call").on('click', function (e) {
         Phone.call($("#number").val());
     });
 
-    $("#end").on('click', function(e){
+    $("#end").on('click', function (e) {
         Phone.end();
     });
 
-    $("#saveSettings").on('click', function(){
+    $("#saveSettings").on('click', function () {
         console.log('save!');
-        $.jStorage.set('host', $('#host').val());
-        $.jStorage.set('user', $('#user').val());
+        $.jStorage.set('uri', $('#uri').val());
+        $.jStorage.set('name', $('#name').val());
         $.jStorage.set('password', $('#password').val());
+        $.jStorage.set('authName', $('#authName').val());
+        $.jStorage.set('wsServer', $('#wsServer').val());
 
         $('#myModal').modal('hide');
         initPhone();      
     });
     
-    function initFromStorage(){
-        $("#host").val($.jStorage.get('host'));
-        $("#user").val($.jStorage.get('user'));
+    function initFromStorage () {
+        $("#uri").val($.jStorage.get('uri'));
+        $("#name").val($.jStorage.get('name'));
         $("#password").val($.jStorage.get('password'));
+        $("#authName").val($.jStorage.get('authName'));
+        $("#wsServer").val($.jStorage.get('wsServer'));
 
         return {
-            host: $.jStorage.get('host'),
-            user: $.jStorage.get('user'),
-            password: $.jStorage.get('password')
+            uri: $.jStorage.get('uri'),
+            name: $.jStorage.get('name'),
+            password: $.jStorage.get('password'),
+            authName: $.jStorage.get('authName'),
+            wsServer: $.jStorage.get('wsServer')
         };        
-    }
+    };
 
-    function initPhone(){
+    function checkEmpty (param) {
+        return param === '';
+    };
+
+    function checkParams (creds) {
+        return checkEmpty(creds.uri) && 
+               checkEmpty(creds.name) && 
+               checkEmpty(creds.password) && 
+               checkEmpty(creds.authName) &&
+               checkEmpty(creds.wsServer);
+    };
+
+    function initPhone () {
         var creds = initFromStorage();
+        console.log(creds);
 
-        var host = creds.host || 'localhost';
-        var user = creds.user || '1060';
-        var password = creds.password || 'password';
+        if (!checkParams(creds)) { 
+            var config = {
+                uri: creds.uri,
+                wsServers: creds.wsServer,
+                authorizationUser: creds.authName,
+                password: creds.password,
+                hackIpInContact: true,
+                register: true,
+                log: {
+                    builtinEnabled: false,
+                },
+                stunServers: [
+                    "stun.stunprotocol.org:3478",
+                    "stun.voiparound.com",
+                    "stun.voipbuster.com",
+                    "stun.turnservers.com:3478"
+                ],
+            };
 
-        console.log(host, user, password);
-
-        var config = {
-            uri: user + '@' + host,
-            wsServers: 'ws://'+ host +':5066',
-            authorizationUser: user,
-            password: password,
-            hackIpInContact: true,
-            register: false,
-            log: {
-                builtinEnabled: false,
-            },
-            stunServers: [                                
-                "stun.stunprotocol.org:3478",
-                "stun.voiparound.com",
-                "stun.voipbuster.com",            
-                "stun.turnservers.com:3478"
-            ],
-        };
-
-        Phone = new phone();
-        Phone.init(host, config);
-    }
+            Phone = new phone();
+            Phone.init(config);
+        } else {
+            console.log('not set config params');
+        }
+        
+    };
     
     initPhone();
 });
