@@ -1,6 +1,5 @@
 var phone = function () {
-    this.line = null;
-    this.host = null;
+    this.line = null;   
 
     this.session_time = 0;
     this.session_time_id = null;
@@ -98,7 +97,7 @@ phone.prototype.invite = function (number) {
         }, 1000);
     }
 
-    this.session = this.line.invite('sip:' + number + '@' + this.host, options);
+    this.session = this.line.invite('sip:' + number, options);
 
     this.session.on('accepted', function (data) {
         console.log('accepted', data);
@@ -162,8 +161,7 @@ phone.prototype.release = function () {
     }
 };
 
-phone.prototype.init = function (host, config) {
-    this.host = host;
+phone.prototype.init = function (config) {    
     this.initLine(config);
     this.initEventsLine();
     this.line.register();
