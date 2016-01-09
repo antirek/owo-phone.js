@@ -20,16 +20,7 @@ var config = {
         builtinEnabled: false,
     },
     stunServers: [
-        "stun.ideasip.com",
-        "stun.iptel.org",
-        "stun.rixtelecom.se",
-        "stun.schlund.de",
-        "stunserver.org",
-        "stun.stunprotocol.org:3478",
-        "stun.voiparound.com",
-        "stun.voipbuster.com",
-        "stun.voipstunt.com",
-        "stun.turnservers.com:3478"
+        "195.130.214.17"
     ],    
 };
 

@@ -39,7 +39,7 @@ phone.prototype.initEventsLine = function () {
     });
 
     this.line.on('registrationFailed', function (cause) {
-        $("#registerStatus").html('register failed!' + );
+        $("#registerStatus").html('register failed!');
     });
 
     this.line.on('unregistered', function (data) {
