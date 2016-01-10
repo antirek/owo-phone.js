@@ -66,6 +66,7 @@ $(function () {
                     builtinEnabled: false,
                 },
                 stunServers: [
+                    "stun.l.google.com:19302",
                     "stun.stunprotocol.org:3478",
                     "stun.voiparound.com",
                     "stun.voipbuster.com",
