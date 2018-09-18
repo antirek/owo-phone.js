@@ -9,7 +9,7 @@ http://antirek.github.io/owo-phone.js
 Install
 =======
 
-
+please see INSTALL.md about related environments
 
 Links
 =====
