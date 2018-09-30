@@ -104,3 +104,19 @@ Name/username             Host                                    Dyn Forcerport
 
 ### 3. Configure SIPjs
 
+Here we have a problem, chrome/like browsers dont allow easyle to setup a exception to your new ws entry point selft signed certificate, so maybe its recommended to use firefox/palemoon here next, for that, navigate to `https://127.0.0.1:8089/ws` and add the certificate exception by click on the @avanced@ button at the screen advertise.
+
+Next, clones and setup the git example , install npm, bower and populate the example >
+
+```
+cd /var/www/html/
+git clone https://github.com/mckaygerhard/owo-phone.js.git sipjs
+npm install bower
+bower install
+```
+
+now point your browser to `http://localhost/sipjs/` and fil the inputs with the asterisk user 1060 with the  ws server as your local host ip or configured in the http.conf file.
+
+For troubles see https://github.com/antirek/owo-phone.js/issues/3
+
+now
