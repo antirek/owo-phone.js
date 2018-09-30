@@ -1,6 +1,6 @@
 # SIPjs + Asterisk > on Debian
 
-This document will use asterisk debian qualitfy packages only, backported for wheeze/jessie or assumed available on strecht.
+This document will **show how to setup, install and deploy asterisk with SIPjs**, to property setup this git example demo, but will use debian qualitfy packages only, backported for wheeze/jessie or assumed available on strecht.
 
 ### 1. Instalation asterisk
 
