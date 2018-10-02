@@ -1,6 +1,6 @@
 # SIPjs + Asterisk > on Debian
 
-This document will **show how to setup, install and deploy asterisk with SIPjs**, to property setup this git example demo, but will use debian qualitfy packages only, backported for wheeze/jessie or assumed available on strecht.
+This document will **show how to setup, install and deploy asterisk with SIPjs by using the owo-phone example implementation**, to property setup this git example demo, but will use debian qualitfy packages only, backported for wheeze/jessie or assumed available on strecht.
 
 ### 1. Instalation asterisk
 
@@ -24,6 +24,8 @@ apt-get update
 
 apt-get install asterisk 
 ```
+
+**IMPORTANT** this will install asterisk from debian backport if available, in wheeze will install 11.14 that has limited support for streaming, in jessie will install asterisk 12 that have good support, but if vegnuli repo are enable, wil install in jessie asterisk 13.14 with complete streaming support. For most modern Debian will install lasted asterisk that have good complete streaming support.
 
 ### 2. Configuracion asterisk
 
@@ -106,17 +108,35 @@ Name/username             Host                                    Dyn Forcerport
 
 Here we have a problem, chrome/like browsers dont allow easyle to setup a exception to your new ws entry point selft signed certificate, so maybe its recommended to use firefox/palemoon here next, for that, navigate to `https://127.0.0.1:8089/ws` and add the certificate exception by click on the @avanced@ button at the screen advertise.
 
-Next, clones and setup the git example , install npm, bower and populate the example >
+**Install apache, git, curl nodejs and npm**
+
+```
+apt-get install apache2 git git-core curl apt-transport-https
+
+echo "deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu lucid main" >> /etc/apt/sources.list.d/50nodejsnpm.list
+apt-get update
+apt-get install nodejs=0.10.37-1chl1~lucid1
+```
+**clone the project example of SIPjs owo-phone**
 
 ```
 cd /var/www/html/
 git clone https://github.com/mckaygerhard/owo-phone.js.git sipjs
+cd /var/www/html/sipjs
 npm install bower
-bower install
+node_modules/bower/bin/bower install --allow-root
 ```
+
+**Open your browser and try to start communication**
 
 now point your browser to `http://localhost/sipjs/` and fil the inputs with the asterisk user 1060 with the  ws server as your local host ip or configured in the http.conf file.
 
+* push the whell button aside to the "Call" button
+* use any name
+* uri are the 1060@127.0.0.1
+* auth name : 1060
+* password of 1060 "password" as was paste in the sip.conf
+* ws server: `wss://127.0.0.1:8089/ws`
+
 For troubles see https://github.com/antirek/owo-phone.js/issues/3
 
-now
