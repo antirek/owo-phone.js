@@ -1,8 +1,69 @@
-# SIPjs + Asterisk > on Debian
+owo-phone.js INSTALL
+====================
 
-This document will **show how to setup, install and deploy asterisk with SIPjs by using the owo-phone example implementation**, to property setup this git example demo, but will use debian qualitfy packages only, backported for wheeze/jessie or assumed available on strecht.
+There are two ways to install this project, 
+one is fast but requires a separate resource from websocket 
+and another is deploying everything locally including websocket software
 
-### 1. Instalation asterisk
+## QUICK INSTALL:
+
+> is fast but requires a separate resource called websocket server
+
+This repository can be quickly used if you have the following:
+* a web server where to place these files
+* the git program by which to obtain these files
+
+These was the deployment requirements, the execution ones are:
+* a websocket server which to use
+* user / phone credentials on same server
+* analog phone credentials on same server
+
+The following procedure are for Debian based systems, 
+open a console and type `su` to gain privilegies adn run following commands steps:
+
+#### 1. Install apache, git, curl nodejs and npm
+
+```
+apt-get install apache2 git git-core curl apt-transport-https
+
+echo "deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu lucid main" >> /etc/apt/sources.list.d/50nodejsnpm.list
+apt-get update
+apt-get install nodejs=0.10.37-1chl1~lucid1
+```
+
+#### 2. clone the project example of SIPjs owo-phone
+
+```
+cd /var/www/html/
+git clone https://github.com/antirek/owo-phone.js.git sipjs
+cd /var/www/html/sipjs
+npm install bower
+node_modules/bower/bin/bower install --allow-root
+```
+
+#### 3. Open your browser and try to start communication
+
+now point your browser to `http://localhost/sipjs/` 
+
+push the whell button aside to the "Call" button and provide all the 
+credentials information of the two users/phones and the websocket server uri.
+
+For troubles see https://github.com/antirek/owo-phone.js/issues/3
+
+
+## ALL LOCAL INSTALL
+
+> is deploying everything locally including websocket software
+
+This document will **show how to setup, install and deploy asterisk with SIPjs 
+by using the owo-phone example implementation**, to property setup this git example demo, 
+but will use debian qualitfy packages only, backported for wheeze/jessie or assumed available on strecht.
+
+If you want a ready to use Debian based distro, try the VenenuX iso at 
+https://sourceforge.net/projects/vegnuli/files/VenenuX-1.0/venenux-1.0-osposweb/debian-venenux-8-osposweb-i386.hybrid.iso/download
+that already has some of the needs for deploy this implementation.
+
+#### 1. Instalation asterisk
 
 Debian wheeze and jessie have backported packages, but for jessie you can use venenux packages (still wheeze pending).
 
@@ -27,7 +88,7 @@ apt-get install asterisk
 
 **IMPORTANT** this will install asterisk from debian backport if available, in wheeze will install 11.14 that has limited support for streaming, in jessie will install asterisk 12 that have good support, but if vegnuli repo are enable, wil install in jessie asterisk 13.14 with complete streaming support. For most modern Debian will install lasted asterisk that have good complete streaming support.
 
-### 2. Configuracion asterisk
+#### 2. Configuracion asterisk
 
 Generates a selft signed certificate for the wss entry point, configure http and sip modules for webrtc >
 
@@ -104,7 +165,7 @@ Name/username             Host                                    Dyn Forcerport
 2 sip peers [Monitored: 0 online, 0 offline Unmonitored: 0 online, 2 offline]
 ```
 
-### 3. Configure SIPjs
+#### 3. Configure SIPjs
 
 Here we have a problem, chrome/like browsers dont allow easyle to setup a exception to your new ws entry point selft signed certificate, so maybe its recommended to use firefox/palemoon here next, for that, navigate to `https://127.0.0.1:8089/ws` and add the certificate exception by click on the @avanced@ button at the screen advertise.
 
