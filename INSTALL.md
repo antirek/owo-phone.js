@@ -19,7 +19,7 @@ These was the deployment requirements, the execution ones are:
 * analog phone credentials on same server
 
 The following procedure are for Debian based systems, 
-open a console and type `su` to gain privilegies adn run following commands steps:
+open a console and type `su` to gain privilegies and run following commands steps:
 
 #### 1. Install apache, git, curl nodejs and npm
 
@@ -43,13 +43,14 @@ node_modules/bower/bin/bower install --allow-root
 
 #### 3. Open your browser and try to start communication
 
-now point your browser to `http://localhost/sipjs/` 
+Now point your browser to `http://localhost/sipjs/` 
 
-push the whell button aside to the "Call" button and provide all the 
-credentials information of the two users/phones and the websocket server uri.
+Press the "wheel" button next to the "call" button and provide all the credentials 
+as well as the "ws" service entry point uri to be able to use it.
 
-For troubles see https://github.com/antirek/owo-phone.js/issues/3
-
+Once this way you can make a "call" to a number of the same "ws" WebRTC service 
+on that server prevously placed/configured, that means, you can perform voice/video 
+streaming chat between two telephones, but at least one will be digital, the browser phone.
 
 ## ALL LOCAL INSTALL
 
@@ -190,7 +191,10 @@ node_modules/bower/bin/bower install --allow-root
 
 **Open your browser and try to start communication**
 
-now point your browser to `http://localhost/sipjs/` and fil the inputs with the asterisk user 1060 with the  ws server as your local host ip or configured in the http.conf file.
+Now point your browser to `http://localhost/sipjs/` 
+
+Press the "wheel" button next to the "call" button and provide all the credentials 
+as well as the "ws" service entry point uri to be able to use it.
 
 * push the whell button aside to the "Call" button
 * use any name
@@ -199,5 +203,8 @@ now point your browser to `http://localhost/sipjs/` and fil the inputs with the 
 * password of 1060 "password" as was paste in the sip.conf
 * ws server: `wss://127.0.0.1:8089/ws`
 
-For troubles see https://github.com/antirek/owo-phone.js/issues/3
+
+Once this way you can make a "call" to a number of the same "ws" WebRTC service 
+on that server prevously placed/configured, that means, you can perform voice/video 
+streaming chat between two telephones, but at least one will be digital, the browser phone.
 
