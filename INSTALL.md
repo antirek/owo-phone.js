@@ -183,7 +183,7 @@ apt-get install nodejs=0.10.37-1chl1~lucid1
 
 ```
 cd /var/www/html/
-git clone https://github.com/mckaygerhard/owo-phone.js.git sipjs
+git clone https://github.com/antirek/owo-phone.js.git sipjs
 cd /var/www/html/sipjs
 npm install bower
 node_modules/bower/bin/bower install --allow-root
