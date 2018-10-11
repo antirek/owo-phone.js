@@ -89,7 +89,7 @@ apt-get install asterisk
 
 **IMPORTANT** this will install asterisk from debian backport if available, in wheeze will install 11.14 that has limited support for streaming, in jessie will install asterisk 12 that have good support, but if vegnuli repo are enable, wil install in jessie asterisk 13.14 with complete streaming support. For most modern Debian will install lasted asterisk that have good complete streaming support.
 
-#### 2. Configuracion asterisk
+#### 2. Configuration asterisk
 
 Generates a selft signed certificate for the wss entry point, configure http and sip modules for webrtc >
 
