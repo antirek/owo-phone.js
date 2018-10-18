@@ -46,7 +46,8 @@ node_modules/bower/bin/bower install --allow-root
 Now point your browser to `http://localhost/sipjs/` 
 
 Press the "wheel" button next to the "call" button and provide all the credentials 
-as well as the "ws" service entry point uri to be able to use it.
+as well as the "ws" service entry point uri to be able to use it. Please you must understand 
+all the inputs to provide here...
 
 Once this way you can make a "call" to a number of the same "ws" WebRTC service 
 on that server prevously placed/configured, that means, you can perform voice/video 
@@ -57,8 +58,12 @@ streaming chat between two telephones, but at least one will be digital, the bro
 > is deploying everything locally including websocket software
 
 This document will **show how to setup, install and deploy asterisk with SIPjs 
-by using the owo-phone example implementation**, to property setup this git example demo, 
-but will use debian qualitfy packages only, backported for wheeze/jessie or assumed available on strecht.
+by using the owo-phone example implementation**, please take in consideration that SIP 
+implementation in asterisk have some notes: sip channel are only in asterisk 12, 13 and 14, 
+since asterisk 15 sip was deprecated and a new module named pjsip are use for webrtc 
+so to property setup this git example demo, we using Debian 8 or Debian 9 (and may work with Debian 7)
+but will use debian qualitfy packages only, backported for wheeze/jessie or assumed available on strecht
+that have asterisk 11/12, asterisk 13 and asterisk 14 respectively.
 
 If you want a ready to use Debian based distro, try the VenenuX iso at 
 https://sourceforge.net/projects/vegnuli/files/VenenuX-1.0/venenux-1.0-osposweb/debian-venenux-8-osposweb-i386.hybrid.iso/download
@@ -102,48 +107,94 @@ openssl req -x509 -days 360 -nodes -newkey rsa:4096 \
    -keyout /etc/ssl/certs/$ipdefval.pem -out /etc/ssl/certs/$ipdefval.pem
 
 sed "s|.*;enabled=.*|enabled=yes|g" -i /etc/asterisk/http.conf
-sed "s|;bindaddr=127.0.0.1|bindaddr=$ipdefval|g" -i /etc/asterisk/http.conf 
+sed "s|.*bindaddr=.*|bindaddr=0.0.0.0|g" -i /etc/asterisk/http.conf 
 sed "s|.*;tlsenable=.*|tlsenable=yes          ; enable tls - default no.|g" -i /etc/asterisk/http.conf
+sed "s|.*tlsbindaddr=.*|tlsbindaddr=0.0.0.0:8089|g" -i /etc/asterisk/http.conf 
 sed "s|.*tlscertfile=.*|tlscertfile=/etc/ssl/certs/$ipdefval.pem|g" -i /etc/asterisk/http.conf
 sed "s|.*tlsprivatekey=.*|tlsprivatekey=/etc/ssl/certs/$ipdefval.pem|g" -i /etc/asterisk/http.conf
 
+sed "s|.*icesupport=.*|icesupport=true|g" -i /etc/asterisk/rtp.conf
+sed "s|.*stunaddr=.*|stunaddr=stun.l.google.com:19302|g" -i /etc/asterisk/rtp.conf
+sed "s|.*stunaddr =.*|stunaddr=stun.l.google.com:19302|g" -i /etc/asterisk/res_stun_monitor.conf
+sed "s|.*stunrefresh =.*|stunrefresh = 30|g" -i /etc/asterisk/res_stun_monitor.conf
+
 sed "s|;realm=.*|realm=$ipdefval             ; Realm for digest authentication|g" -i /etc/asterisk/sip.conf
+sed "s|transport.*=.*|transport=udp,ws,wss|g" -i /etc/asterisk/sip.conf
+sed "s|.*websocket_enabled.*=.*|websocket_enabled = true|g" -i /etc/asterisk/sip.conf
 ```
 
-**WARNING** at this point everything was done with simple commands, now we must open sip.conf and added two new sections:
+**WARNING** at this point everything was done with simple commands, now we must open sip.conf and added the devices at end:
 
 ```
-[1060] ; This will be WebRTC client
-type=friend
-username=1060 ; The Auth user for SIP.js
-host=dynamic ; Allows any host to register
-secret=password ; The SIP Password for SIP.js
-encryption=yes ; Tell Asterisk to use encryption for this peer
-avpf=yes ; Tell Asterisk to use AVPF for this peer
-icesupport=yes ; Tell Asterisk to use ICE for this peer
-context=default ; Tell Asterisk which context to use when this peer is dialing
-directmedia=no ; Asterisk will relay media for this peer
-transport=udp,ws,wss ; Asterisk will allow this peer to register on UDP or WebSockets
-force_avp=yes ; Force Asterisk to use avp. Introduced in Asterisk 11.11
-dtlsenable=yes ; Tell Asterisk to enable DTLS for this peer
-dtlsverify=fingerprint ; Tell Asterisk to verify DTLS fingerprint
-dtlscertfile=/etc/asterisk/keys/asterisk.pem ; Tell Asterisk where your DTLS cert file is
-dtlssetup=actpass ; Tell Asterisk to use actpass SDP parameter when setting up DTLS
-rtcp_mux=yes ; Tell Asterisk to do RTCP mux
+externaddr = $ipdefval ; WARNING this line in general section, later at end the devices section
 
-[1061] ; This will be the legacy SIP client
-type=friend
-username=1061
+[1001]
 host=dynamic
-secret=password
-context=default
+secret=12345
+context=websip
+type=friend
+encryption=yes
+avpf=yes
+;force_avp=yes
+icesupport=yes
+directmedia=no
+disallow=all
+dial = SIP/1001
+disallow=all
+allow=ulaw
+allow=alaw
+allow=speex
+allow=gsm
+dtlsenable=yes
+dtlsverify=fingerprint
+dtlscertfile=/etc/ssl/certs/<ipaddress>.pem
+dtlssetup=actpass
+nat=force_rport,comedia
+
+[1060]
+host=dynamic
+secret=12345
+context=websip
+type=friend
+encryption=yes
+avpf=yes
+;force_avp=yes
+icesupport=yes
+directmedia=no
+disallow=all
+dial = SIP/1060
+disallow=all
+allow=ulaw
+allow=alaw
+allow=speex
+allow=gsm
+dtlsenable=yes
+dtlsverify=fingerprint
+dtlscertfile=/etc/ssl/certs/<ipaddress>.pem
+dtlssetup=actpass
+nat=force_rport,comedia
+
+[1061]
+host=dynamic
+username=1061
+secret=12345
+context=public
+type=friend
+dial = SIP/1061
 ```
 
 **WARNING** now go to extensions.conf and added to "default" section the two users around line 671 in the file:
 
 ```
-exten => 1060,1,Dial(SIP/1060) ; Dialing 1060 will call the SIP client registered to 1060
-exten => 1061,1,Dial(SIP/1061) ; Dialing 1061 will call the SIP client registered to 1061
+[websip]
+include => default
+; For Testing Audio
+exten => 1111,1,Answer()
+same => n,Playback(demo-thanks)
+same => n,Hangup()
+; For testing SIP to SIP calling
+exten => _X.,1,Dial(SIP/${EXTEN})
+exten => _X.,n,Hangup()
 ```
 
 restart service and test:
@@ -159,26 +210,32 @@ Server: Asterisk/13.14.1
 /ari/... => Asterisk RESTful API
 /ws => Asterisk HTTP WebSocket
 
-asterisk -rvvv -x 'sip show peers'
-Name/username             Host                                    Dyn Forcerport Comedia    ACL Port     Status      Description 
-1060/1060                 (Unspecified)                            D  Auto (No)  No             0        Unmonitored
-1061/1061                 (Unspecified)                            D  Auto (No)  No             0        Unmonitored
-2 sip peers [Monitored: 0 online, 0 offline Unmonitored: 0 online, 2 offline]
+asterisk -rvvv -x 'sip show users'
+Username                   Secret           Accountcode      Def.Context      ACL  Forcerport
+1001                       12345                             websip           No   Yes       
+1060                       12345                             websip           No   Yes       
+1061                       12345                             public           No   No  
 ```
 
 #### 3. Configure SIPjs
 
-Here we have a problem, chrome/like browsers dont allow easyle to setup a exception to your new ws entry point selft signed certificate, so maybe its recommended to use firefox/palemoon here next, for that, navigate to `https://127.0.0.1:8089/ws` and add the certificate exception by click on the @avanced@ button at the screen advertise.
+Here we have a problem, chrome/like browsers dont allow easyle to setup a exception to your new ws entry 
+point self signed certificate, so maybe its recommended to use firefox/palemoon here next, for that, navigate 
+to `https://127.0.0.1:8089/ws` and add the certificate exception by click on the @avanced@ button at the screen advertise.
 
 **Install apache, git, curl nodejs and npm**
 
 ```
 apt-get install apache2 git git-core curl apt-transport-https
 
-echo "deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu lucid main" >> /etc/apt/sources.list.d/50nodejsnpm.list
+wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add 
+echo "deb https://deb.nodesource.com/node_8.x jessie main" > /etc/apt/sources.list.d/50nodejsnpm.list
 apt-get update
-apt-get install nodejs=0.10.37-1chl1~lucid1
+apt-get purge -y --force-yes nodejs* npm
+apt-get install nodejs=8.12.0-1nodesource1
 ```
+Si el ultimo comando falla simplemente `apt-get install nodejs`
+
 **clone the project example of SIPjs owo-phone**
 
 ```
@@ -197,14 +254,16 @@ Press the "wheel" button next to the "call" button and provide all the credentia
 as well as the "ws" service entry point uri to be able to use it.
 
 * push the whell button aside to the "Call" button
-* use any name
-* uri are the 1060@127.0.0.1
+* use the sip.conf configure device name 1001 or 1060 can be
+* uri are the 1060@127.0.0.1 or 1001@127.0.0.1 or <devicename>@<ipaddress> like 1060@10.101.10.222
 * auth name : 1060
-* password of 1060 "password" as was paste in the sip.conf
-* ws server: `wss://127.0.0.1:8089/ws`
+* password of 1060 "12345" as was paste in the sip.conf
+* ws server: `wss://127.0.0.1:8089/ws` or use ipaddress like `wss://10.101.10.222:8089/ws`
 
 
 Once this way you can make a "call" to a number of the same "ws" WebRTC service 
-on that server prevously placed/configured, that means, you can perform voice/video 
-streaming chat between two telephones, but at least one will be digital, the browser phone.
+on that server prevously placed/configured, that means, you can perform voice 
+streaming chat between two telephones, but at least one will be digital, the browser phone, 
+by example the "1060" device/number can call the "1001" if each one configured in 
+different browsers, or any of those can make a call to the "1111" demo configured in extensions.
 
