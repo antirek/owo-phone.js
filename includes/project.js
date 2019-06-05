@@ -62,6 +62,7 @@ $(function () {
                 password: creds.password,
                 hackIpInContact: true,
                 register: true,
+                rtcpMuxPolicy: "negotiate",
                 log: {
                     builtinEnabled: false,
                 },
