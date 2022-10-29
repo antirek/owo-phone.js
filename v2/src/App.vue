@@ -45,33 +45,33 @@
           <div class="modal-body">
             <div class="mb-3">
               <label for="Name" class="form-label">Name</label>
-              <input type="text" class="form-control" id="Name" placeholder="Sergey">
+              <input type="text" class="form-control" id="Name" v-model="Name" placeholder="Sergey">
             </div>
             <div class="mb-3">
               <label for="URI" class="form-label">URI</label>
-              <input type="text" class="form-control" id="URI" placeholder="sip:100@host">
+              <input type="text" class="form-control" id="URI" v-model="URI" placeholder="sip:100@host">
             </div>
             <div class="mb-3">
               <label for="AuthName" class="form-label">Auth Name</label>
-              <input type="text" class="form-control" id="AuthName" placeholder="101">
+              <input type="text" class="form-control" id="AuthName" v-model="AuthName" placeholder="101">
             </div>
             <div class="mb-3">
               <label for="Password" class="form-label">Password</label>
-              <input type="text" class="form-control" id="Password" placeholder="SecretPassword">
+              <input type="text" class="form-control" id="Password" v-model="Password" placeholder="SecretPassword">
             </div>
             <div class="mb-3">
               <label for="WSServer" class="form-label">WS Server</label>
-              <input type="text" class="form-control" id="WSServer" placeholder="wss://host:port/ws">
+              <input type="text" class="form-control" id="WSServer" v-model="WSServer" placeholder="wss://host:port/ws">
             </div>
             <div class="mb-3">
-              <label for="exampleFormControlTextarea1" class="form-label">STUN / TURN</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" placeholder="stun:stun.l.google.com:19302
+              <label for="stun" class="form-label">STUN / TURN</label>
+              <textarea class="form-control" id="stun" rows="2" v-model="stun" placeholder="stun:stun.l.google.com:19302
     turn:turn_host:19302,user,password"></textarea>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save</button>
+            <a class="btn btn-secondary" @click="hideModal()" data-bs-dismiss="modal">Close</a>
+            <a class="btn btn-primary" @click="saveSettings()">Save</a>
           </div>
         </div>
       </div>
@@ -81,6 +81,8 @@
 
 <script>
 import JsSIP from "jssip";
+import bootstrap from 'bootstrap';
+
 JsSIP.debug.enable('JsSIP:*');
 
 var pcConfig = {
@@ -95,7 +97,7 @@ var pcConfig = {
 };
 
 
-function callOn(phone) {
+function callOn(ua, phone) {
   if (!phone || phone === '') {
     return;
   }
@@ -135,89 +137,93 @@ function callOn(phone) {
     },
     pcConfig: pcConfig,
   };
-  console.log('call');
+  console.log('call');  
   var session = ua.call('sip:' + phone + '@62.109.24.81', options);
   console.log('call', session);
 }
 
-var socket = new JsSIP.WebSocketInterface('wss://serge.dmitriev.fvds.ru:8089/ws');
-var configuration = {
-  sockets: [ socket ],
-  uri: 'sip:103@62.109.24.81',
-  password : 'zxcv1234',
-  register: true,
-  register_expires: 120,
-};
-
-var ua = new JsSIP.UA(configuration);
-ua.start();
-        
-ua.on('newRTCSession', function(data){ 
-  console.log('new session', data);
-
-  var callOptions = {
-    mediaConstraints: {
-      audio: true, // only audio calls
-      video: false
-    },
-    pcConfig: pcConfig,
+function connect (config) {
+  var socket = new JsSIP.WebSocketInterface(config.WSServer);
+  var configuration = {
+    sockets: [ socket ],
+    uri: config.URI,
+    password : config.Password,
+    register: true,
+    register_expires: 120,
   };
 
-  var session = data.session;
-  
-  console.log('session', session, session.direction);
-  // if (session.direction === "incoming") {
-  // incoming call here
-  session.on("accepted", function(e){
-    // the call has answered
-    console.log('accepted', e);
-  });
-  session.on("confirmed",function(e){
-    // this handler will be called for incoming calls too
-    console.log('confirmed', e);
-  });
-  session.on("ended",function(){
-      // the call has ended
-      console.log('ended');
-  });
-  session.on("failed",function(){
-      // unable to establish the call
-      console.log('failed');
-  });
-  session.on('peerconnection:createanswerfailed', function (e) {
-    console.log('peerconnection:createanswerfailed', e);
-  });
+  var ua = new JsSIP.UA(configuration);
+  ua.start();
+          
+  ua.on('newRTCSession', function(data){ 
+    console.log('new session', data);
 
-  session.on('icecandidate', function (e) {
-    console.log('icecandidate', e);
-  });
+    var callOptions = {
+      mediaConstraints: {
+        audio: true, // only audio calls
+        video: false
+      },
+      pcConfig: pcConfig,
+    };
 
-  session.on('getusermediafailed', function (e) {
-    console.log('getusermediafailed', e);
-  });
+    var session = data.session;
+    
+    console.log('session', session, session.direction);
+    // if (session.direction === "incoming") {
+    // incoming call here
+    session.on("accepted", function(e){
+      // the call has answered
+      console.log('accepted', e);
+    });
+    session.on("confirmed",function(e){
+      // this handler will be called for incoming calls too
+      console.log('confirmed', e);
+    });
+    session.on("ended",function(){
+        // the call has ended
+        console.log('ended');
+    });
+    session.on("failed",function(){
+        // unable to establish the call
+        console.log('failed');
+    });
+    session.on('peerconnection:createanswerfailed', function (e) {
+      console.log('peerconnection:createanswerfailed', e);
+    });
 
-  session.on('peerconnection', function(e) {
-    console.log('peerconnection', e);
-    e.peerconnection.onaddstream = function(event) {
-      console.log(' *** addstream', event);
-      var audioElement = document.createElement("audio");
-      document.body.appendChild(audioElement);
-      audioElement.srcObject = event.stream;
-      audioElement.play();
+    session.on('icecandidate', function (e) {
+      console.log('icecandidate', e);
+    });
+
+    session.on('getusermediafailed', function (e) {
+      console.log('getusermediafailed', e);
+    });
+
+    session.on('peerconnection', function(e) {
+      console.log('peerconnection', e);
+      e.peerconnection.onaddstream = function(event) {
+        console.log(' *** addstream', event);
+        var audioElement = document.createElement("audio");
+        document.body.appendChild(audioElement);
+        audioElement.srcObject = event.stream;
+        audioElement.play();
+      }
+    })
+
+
+
+    // Answer call
+    if (session.direction === "incoming") {
+      console.log('incoming call, try answer');
+      session.answer(callOptions);
     }
-  })
+    // Reject call (or hang up it)
+    // session.terminate();
 
+  });
 
-
-  // Answer call
-  if (session.direction === "incoming") {
-    console.log('incoming call, try answer');
-    session.answer(callOptions);
-  }
-  // Reject call (or hang up it)
-  // session.terminate();
-
-});
+  return ua;
+}
 
 export default {
   name: 'App',
@@ -225,15 +231,55 @@ export default {
     return {
       phone: '',
       isCall: false,
+      Name: '',
+      URI: '',
+      AuthName: '',
+      Password: '',
+      WSServer: '',
+      stun: '',
+      ua: '',
     };
   },
+  mounted() {
+    this.Name = localStorage.getItem('Name') !== '' ? localStorage.getItem('Name') : '';
+    this.URI = localStorage.getItem('URI') !== '' ? localStorage.getItem('URI') : '';
+    this.AuthName = localStorage.getItem('AuthName') !== '' ? localStorage.getItem('AuthName') : '';
+    this.Password = localStorage.getItem('Password') !== '' ? localStorage.getItem('Password') : '';
+    this.WSServer = localStorage.getItem('WSServer') !== '' ? localStorage.getItem('WSServer') : '';
+    this.stun = localStorage.getItem('stun') !== '' ? localStorage.getItem('stun') : '';
+
+    this.ua = connect({
+      Name: this.Name,
+      URI: this.URI,
+      AuthName: this.AuthName,
+      Password: this.Password,
+      WSServer: this.WSServer,
+      stun: this.stun,
+    });
+  },
   methods: {
+    saveSettings() {
+      localStorage.setItem('Name', this.Name);
+      localStorage.setItem('URI', this.URI);
+      localStorage.setItem('AuthName', this.AuthName);
+      localStorage.setItem('Password', this.Password);
+      localStorage.setItem('WSServer', this.WSServer);
+      localStorage.setItem('stun', this.stun);
+    },
     call() {
-      callOn(this.phone);
+      callOn(this.ua, this.phone);
       this.isCall = true;
     },
     endCall() {
       this.isCall = false;
+    },
+    hideModal() {
+      //var exampleModal = document.getElementById('staticBackdrop');
+      var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+        backdrop: true,
+        keyboard: true,
+      });
+      myModal.hide();
     }
   }
 }
