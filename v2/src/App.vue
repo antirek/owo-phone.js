@@ -1,67 +1,82 @@
 <template>
-
-    <div id="app" class="container" style="height:100%">
-      <div class="row"  style="height:200px">
-
+  <div id="app" class="container" style="height:100%">
+    <div class="row"  style="height:200px">
+    </div>
+    <div class="row"  style="height:100%">
+      <div class="col-3">
+        
       </div>
-      <div class="row"  style="height:100%">
-        <div class="col-3">
-          
-        </div>
-        <div class="col-6 well">
-          <div class="card">
-            <div class="card-body">
-              <form class="row g-3">
-                <div class="col-6">
-                  <label for="staticEmail2" class="visually-hidden">Phone</label>
-                  <input type="text" class="form-control" id="phone" v-model="phone" placeholder="phone number">
-                </div>
-                <div class="col-3">
-                  <a class="btn btn-primary col-12" v-if="isIdle" @click="call()">Call</a>
-                  <button type="submit" class="btn btn-danger col-12" v-if="isCall">End</button>
-                </div>
-                <div class="col-3">
-                  <!-- Button trigger modal -->
-                  <button type="button" class="btn btn-outline-secondary col-12" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    Settings
-                  </button>
-                </div>
-              </form>
-            </div>
+      <div class="col-6 well">
+        <div class="card">
+          <div class="card-body">
+            <form class="row g-3">
+              <div class="col-6">
+                <label for="staticEmail2" class="visually-hidden">Phone</label>
+                <input type="text" class="form-control" id="phone" v-model="phone" placeholder="phone number">
+              </div>
+              <div class="col-3">
+                <a class="btn btn-primary col-12" v-if="!isCall" @click="call()">Call</a>
+                <a class="btn btn-danger col-12" v-if="isCall" @click="endCall()">End</a>
+              </div>
+              <div class="col-3">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-outline-secondary col-12" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                  Settings
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-        <div class="col-3">
-          
-        </div>
       </div>
+      <div class="col-3">
+        
+      </div>
+    </div>
 
 
-      <!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Settings</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="exampleFormControlInput1" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Settings</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="Name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="Name" placeholder="Sergey">
+            </div>
+            <div class="mb-3">
+              <label for="URI" class="form-label">URI</label>
+              <input type="text" class="form-control" id="URI" placeholder="sip:100@host">
+            </div>
+            <div class="mb-3">
+              <label for="AuthName" class="form-label">Auth Name</label>
+              <input type="text" class="form-control" id="AuthName" placeholder="101">
+            </div>
+            <div class="mb-3">
+              <label for="Password" class="form-label">Password</label>
+              <input type="text" class="form-control" id="Password" placeholder="SecretPassword">
+            </div>
+            <div class="mb-3">
+              <label for="WSServer" class="form-label">WS Server</label>
+              <input type="text" class="form-control" id="WSServer" placeholder="wss://host:port/ws">
+            </div>
+            <div class="mb-3">
+              <label for="exampleFormControlTextarea1" class="form-label">STUN / TURN</label>
+              <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" placeholder="stun:stun.l.google.com:19302
+    turn:turn_host:19302,user,password"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save</button>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
-          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
-</div>
-    </div>
 </template>
 
 <script>
@@ -210,12 +225,15 @@ export default {
     return {
       phone: '',
       isCall: false,
-      isIdle: true,
     };
   },
   methods: {
     call() {
       callOn(this.phone);
+      this.isCall = true;
+    },
+    endCall() {
+      this.isCall = false;
     }
   }
 }
