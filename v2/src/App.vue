@@ -81,23 +81,15 @@
 
 <script>
 import JsSIP from "jssip";
-import bootstrap from 'bootstrap';
+import * as bootstrap from 'bootstrap';
+
+import {splitStun} from './functions';
 
 JsSIP.debug.enable('JsSIP:*');
 
-var pcConfig = {
-  iceServers: [
-    {
-      urls: ["turn:62.109.24.81:3478"],
-      username: "user1",
-      credential: "password1",
-    },
-  ],
-  iceTransportPolicy: "relay",
-};
 
 
-function callOn(ua, phone) {
+function callOn(ua, phone, config) {
   if (!phone || phone === '') {
     return;
   }
@@ -125,6 +117,7 @@ function callOn(ua, phone) {
       }
     }
   };
+
   var options = {
     eventHandlers: eventHandlers,
     mediaConstraints: {
@@ -133,16 +126,26 @@ function callOn(ua, phone) {
     },
     rtcpMuxPolicy: 'negotiate',
     rtcOfferConstraints: {
-      offerToReceiveAudio: true
+      offerToReceiveAudio: true,
     },
-    pcConfig: pcConfig,
+    pcConfig: {
+      iceServers: splitStun(config.stun),
+      iceTransportPolicy: "relay",
+    },
   };
-  console.log('call');  
+  console.log('call');
+  
   var session = ua.call('sip:' + phone + '@62.109.24.81', options);
   console.log('call', session);
 }
 
 function connect (config) {
+
+  var pcConfig = {
+    iceServers: splitStun(config.stun),
+    iceTransportPolicy: "relay",
+  };
+  
   var socket = new JsSIP.WebSocketInterface(config.WSServer);
   var configuration = {
     sockets: [ socket ],
@@ -210,8 +213,6 @@ function connect (config) {
       }
     })
 
-
-
     // Answer call
     if (session.direction === "incoming") {
       console.log('incoming call, try answer');
@@ -238,6 +239,7 @@ export default {
       WSServer: '',
       stun: '',
       ua: '',
+      config: null,
     };
   },
   mounted() {
@@ -248,14 +250,15 @@ export default {
     this.WSServer = localStorage.getItem('WSServer') !== '' ? localStorage.getItem('WSServer') : '';
     this.stun = localStorage.getItem('stun') !== '' ? localStorage.getItem('stun') : '';
 
-    this.ua = connect({
+    this.config = {
       Name: this.Name,
       URI: this.URI,
       AuthName: this.AuthName,
       Password: this.Password,
       WSServer: this.WSServer,
       stun: this.stun,
-    });
+    };
+    this.ua = connect(this.config);
   },
   methods: {
     saveSettings() {
@@ -267,7 +270,7 @@ export default {
       localStorage.setItem('stun', this.stun);
     },
     call() {
-      callOn(this.ua, this.phone);
+      callOn(this.ua, this.phone, this.config);
       this.isCall = true;
     },
     endCall() {

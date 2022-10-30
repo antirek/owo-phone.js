@@ -10,6 +10,7 @@
   "dependencies": {
     "bootstrap": "^5.2.2",
     "core-js": "^3.6.5",
+    "jest": "^29.2.2",
     "jssip": "^3.9.1",
     "vue": "^2.6.11"
   },
