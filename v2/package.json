@@ -5,13 +5,15 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "test": "npx jest"
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
     "core-js": "^3.6.5",
     "jest": "^29.2.2",
     "jssip": "^3.9.1",
+    "uri-string-parser": "^1.0.0-beta.2",
     "vue": "^2.6.11"
   },
   "devDependencies": {

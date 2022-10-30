@@ -1,5 +1,5 @@
 import {describe, expect, test} from '@jest/globals';
-import {splitStun} from '../src/functions';
+import {splitStun, getHostFromURI} from '../src/functions';
 
 describe('splitStun', () => {
   test('arr', () => {
@@ -15,5 +15,15 @@ describe('splitStun', () => {
     ];
     console.log('result eee', result);
     expect(arr).toEqual(result);
+  });
+});
+
+
+describe('getHostFromURI', () => {
+  test('arr', () => {
+    const host1 = getHostFromURI('100@1234:80');
+    expect(host1).toEqual('1234');
+    const host2 = getHostFromURI('sip:100@1234:80');
+    expect(host2).toEqual('1234');
   });
 });

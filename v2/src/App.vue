@@ -83,7 +83,8 @@
 import JsSIP from "jssip";
 import * as bootstrap from 'bootstrap';
 
-import {splitStun} from './functions';
+import {splitStun, getHostFromURI} from './functions';
+
 
 JsSIP.debug.enable('JsSIP:*');
 
@@ -134,8 +135,9 @@ function callOn(ua, phone, config) {
     },
   };
   console.log('call');
-  
-  var session = ua.call('sip:' + phone + '@62.109.24.81', options);
+  var host = getHostFromURI(config.URI);
+  console.log('host', host);
+  var session = ua.call('sip:' + phone + '@' + host, options);
   console.log('call', session);
 }
 
