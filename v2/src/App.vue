@@ -89,8 +89,6 @@ import {splitStun, getHostFromURI} from './functions';
 
 JsSIP.debug.enable('JsSIP:*');
 
-
-
 function callOn(ua, phone, config) {
   if (!phone || phone === '') {
     return;
@@ -143,23 +141,22 @@ function callOn(ua, phone, config) {
   return session;
 }
 
-function connect (config) {
-  function onAnswerHandler(session) {
-    var pcConfig = {
+
+function onAnswerHandler(config, session) {
+  var callOptions = {
+    mediaConstraints: {
+      audio: true, // only audio calls
+      video: false
+    },
+    pcConfig: {
       iceServers: splitStun(config.stun),
       iceTransportPolicy: "relay",
-    };
-    var callOptions = {
-      mediaConstraints: {
-        audio: true, // only audio calls
-        video: false
-      },
-      pcConfig: pcConfig,
-    };
-    session.answer(callOptions);
-  }
+    },
+  };
+  session.answer(callOptions);
+}
 
-  
+function connect (config, cb) {
   var socket = new JsSIP.WebSocketInterface(config.WSServer);
   var configuration = {
     sockets: [ socket ],
@@ -220,14 +217,7 @@ function connect (config) {
       }
     })
 
-    // Answer call
-    if (session.direction === "incoming") {
-      console.log('incoming call, try answer');
-      onAnswerHandler(session);
-    }
-    // Reject call (or hang up it)
-    // session.terminate();
-
+    cb(session);
   });
 
   return ua;
@@ -267,10 +257,19 @@ export default {
       WSServer: this.WSServer,
       stun: this.stun,
     };
-    this.ua = connect(this.config);
-    this.ua.on('registered', function () {
-      this.isRegistered = true;
-    })
+    var that = this;
+    this.ua = connect(this.config, function (session) {
+      if(confirm('incoming call')) {
+        that.session = session;
+
+        if (session.direction === "incoming") {
+          console.log('incoming call, try answer');
+          onAnswerHandler(that.config, session);
+        }
+      } else {
+        session.terminate();
+      }
+    });
   },
   methods: {
     saveSettings() {
