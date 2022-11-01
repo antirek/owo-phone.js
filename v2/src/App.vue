@@ -17,6 +17,7 @@
               <div class="col-3">
                 <a class="btn btn-primary col-12" v-if="!isCall" @click="call()">Call</a>
                 <a class="btn btn-danger col-12" v-if="isCall" @click="endCall()">End</a>
+                <a class="btn btn-success col-12" v-if="isRegistered">register</a>
               </div>
               <div class="col-3">
                 <!-- Button trigger modal -->
@@ -139,14 +140,25 @@ function callOn(ua, phone, config) {
   console.log('host', host);
   var session = ua.call('sip:' + phone + '@' + host, options);
   console.log('call', session);
+  return session;
 }
 
 function connect (config) {
+  function onAnswerHandler(session) {
+    var pcConfig = {
+      iceServers: splitStun(config.stun),
+      iceTransportPolicy: "relay",
+    };
+    var callOptions = {
+      mediaConstraints: {
+        audio: true, // only audio calls
+        video: false
+      },
+      pcConfig: pcConfig,
+    };
+    session.answer(callOptions);
+  }
 
-  var pcConfig = {
-    iceServers: splitStun(config.stun),
-    iceTransportPolicy: "relay",
-  };
   
   var socket = new JsSIP.WebSocketInterface(config.WSServer);
   var configuration = {
@@ -159,17 +171,9 @@ function connect (config) {
 
   var ua = new JsSIP.UA(configuration);
   ua.start();
-          
+  
   ua.on('newRTCSession', function(data){ 
     console.log('new session', data);
-
-    var callOptions = {
-      mediaConstraints: {
-        audio: true, // only audio calls
-        video: false
-      },
-      pcConfig: pcConfig,
-    };
 
     var session = data.session;
     
@@ -192,6 +196,7 @@ function connect (config) {
         // unable to establish the call
         console.log('failed');
     });
+
     session.on('peerconnection:createanswerfailed', function (e) {
       console.log('peerconnection:createanswerfailed', e);
     });
@@ -218,7 +223,7 @@ function connect (config) {
     // Answer call
     if (session.direction === "incoming") {
       console.log('incoming call, try answer');
-      session.answer(callOptions);
+      onAnswerHandler(session);
     }
     // Reject call (or hang up it)
     // session.terminate();
@@ -242,6 +247,8 @@ export default {
       stun: '',
       ua: '',
       config: null,
+      session: null,
+      isRegistered: null,
     };
   },
   mounted() {
@@ -261,6 +268,9 @@ export default {
       stun: this.stun,
     };
     this.ua = connect(this.config);
+    this.ua.on('registered', function () {
+      this.isRegistered = true;
+    })
   },
   methods: {
     saveSettings() {
@@ -272,10 +282,13 @@ export default {
       localStorage.setItem('stun', this.stun);
     },
     call() {
-      callOn(this.ua, this.phone, this.config);
+      if (this.session) {return;}
+      this.session = callOn(this.ua, this.phone, this.config);
       this.isCall = true;
     },
     endCall() {
+      if (!this.session) {return}
+      this.session.terminate();
       this.isCall = false;
     },
     hideModal() {
