@@ -89,11 +89,11 @@ import {splitStun, getHostFromURI} from './functions';
 
 JsSIP.debug.enable('JsSIP:*');
 
-function callOn(ua, phone, config) {
-  if (!phone || phone === '') {
-    return;
-  }
-  var eventHandlers = {
+function getCallEventHandlers () {
+  return {
+    'accepted': function (e) {
+      console.log('call accepted', e);
+    },
     'progress': function(e) {
       console.log('call is in progress', e);
     },
@@ -107,43 +107,20 @@ function callOn(ua, phone, config) {
       console.log('call confirmed', e);
     },
     'peerconnection': function(e) {
-      console.log('peerconnection', e);
+      console.log('peerconnection !!!!', e);
       e.peerconnection.onaddstream = function(event) {
         console.log(' *** addstream', event);
         var audioElement = document.createElement("audio");
         document.body.appendChild(audioElement);
         audioElement.srcObject = event.stream;
         audioElement.play();
-      }
-    }
-  };
-
-  var options = {
-    eventHandlers: eventHandlers,
-    mediaConstraints: {
-      audio: true,
-      video: false,
-    },
-    rtcpMuxPolicy: 'negotiate',
-    rtcOfferConstraints: {
-      offerToReceiveAudio: true,
-    },
-    pcConfig: {
-      iceServers: splitStun(config.stun),
-      iceTransportPolicy: "relay",
+      };
     },
   };
-  console.log('call');
-  var host = getHostFromURI(config.URI);
-  console.log('host', host);
-  var session = ua.call('sip:' + phone + '@' + host, options);
-  console.log('call', session);
-  return session;
 }
 
-
-function onAnswerHandler(config, session) {
-  var callOptions = {
+function getCallOptions (config) {
+  return {
     mediaConstraints: {
       audio: true, // only audio calls
       video: false
@@ -152,7 +129,32 @@ function onAnswerHandler(config, session) {
       iceServers: splitStun(config.stun),
       iceTransportPolicy: "relay",
     },
+    rtcpMuxPolicy: 'negotiate',
+    rtcOfferConstraints: {
+      offerToReceiveAudio: true,
+    },
   };
+}
+
+function callOn(ua, phone, config) {
+  if (!phone || phone === '') {
+    return;
+  }
+  
+  var callOptions = {
+    eventHandlers: getCallEventHandlers(),
+    ...getCallOptions(config),
+  };
+  console.log('call');
+  var host = getHostFromURI(config.URI);
+  console.log('host', host);
+  var session = ua.call('sip:' + phone + '@' + host, callOptions);
+  console.log('call', session);
+  return session;
+}
+
+function onAnswerHandler(config, session) {
+  const callOptions = getCallOptions(config);
   session.answer(callOptions);
 }
 
@@ -173,49 +175,19 @@ function connect (config, cb) {
     console.log('new session', data);
 
     var session = data.session;
-    
+  
+    const eventHandlers = getCallEventHandlers();
     console.log('session', session, session.direction);
     // if (session.direction === "incoming") {
     // incoming call here
-    session.on("accepted", function(e){
-      // the call has answered
-      console.log('accepted', e);
-    });
-    session.on("confirmed",function(e){
-      // this handler will be called for incoming calls too
-      console.log('confirmed', e);
-    });
-    session.on("ended",function(){
-        // the call has ended
-        console.log('ended');
-    });
-    session.on("failed",function(){
-        // unable to establish the call
-        console.log('failed');
-    });
-
-    session.on('peerconnection:createanswerfailed', function (e) {
-      console.log('peerconnection:createanswerfailed', e);
-    });
-
+    session.on("accepted", eventHandlers.accepted);
+    session.on("confirmed", eventHandlers.confirmed);
+    session.on("ended", eventHandlers.ended);
+    session.on("failed", eventHandlers.failed);    
     session.on('icecandidate', function (e) {
       console.log('icecandidate', e);
     });
-
-    session.on('getusermediafailed', function (e) {
-      console.log('getusermediafailed', e);
-    });
-
-    session.on('peerconnection', function(e) {
-      console.log('peerconnection', e);
-      e.peerconnection.onaddstream = function(event) {
-        console.log(' *** addstream', event);
-        var audioElement = document.createElement("audio");
-        document.body.appendChild(audioElement);
-        audioElement.srcObject = event.stream;
-        audioElement.play();
-      }
-    })
+    session.on('peerconnection', eventHandlers.peerconnection);
 
     cb(session);
   });
@@ -259,16 +231,16 @@ export default {
     };
     var that = this;
     this.ua = connect(this.config, function (session) {
-      if(confirm('incoming call')) {
-        that.session = session;
+      that.session = session;
 
-        if (session.direction === "incoming") {
+      if (session.direction === "incoming") {
+        if(confirm('incoming call')) {
           console.log('incoming call, try answer');
           onAnswerHandler(that.config, session);
+        } else {
+          session.terminate();
         }
-      } else {
-        session.terminate();
-      }
+      }      
     });
   },
   methods: {
@@ -281,14 +253,14 @@ export default {
       localStorage.setItem('stun', this.stun);
     },
     call() {
-      if (this.session) {return;}
-      this.session = callOn(this.ua, this.phone, this.config);
       this.isCall = true;
+      if (this.session) {return;}
+      this.session = callOn(this.ua, this.phone, this.config);      
     },
     endCall() {
-      if (!this.session) {return}
-      this.session.terminate();
       this.isCall = false;
+      if (!this.session) {return}
+      this.session.terminate();      
     },
     hideModal() {
       //var exampleModal = document.getElementById('staticBackdrop');
