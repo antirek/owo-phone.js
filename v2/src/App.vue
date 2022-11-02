@@ -1,12 +1,10 @@
 <template>
-  <div id="app" class="container" style="height:100%">
-    <div class="row"  style="height:200px">
+  <div id="app" class="container-fluid" style="height:100%">
+    <div class="row" style="height:200px">
     </div>
-    <div class="row"  style="height:100%">
-      <div class="col-3">
-        
-      </div>
-      <div class="col-6 well">
+    <div class="row" style="height:100%">
+      
+      <div class="col-md-6 offset-md-3 col-ms-1 align-self-center">
         <div class="card">
           <div class="card-body">
             <form class="row g-3">
@@ -28,9 +26,6 @@
             </form>
           </div>
         </div>
-      </div>
-      <div class="col-3">
-        
       </div>
     </div>
 
