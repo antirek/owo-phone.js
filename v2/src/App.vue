@@ -86,8 +86,23 @@ import * as bootstrap from 'bootstrap';
 
 import {splitStun, getHostFromURI} from './functions';
 
+// JsSIP.debug.enable('JsSIP:*');
+JsSIP.debug.disable();
 
-JsSIP.debug.enable('JsSIP:*');
+function getCallOutgoingEventHandlers () {
+  return {
+    'peerconnection': function(e) {
+      console.log('peerconnection !!!!', e);
+      e.peerconnection.onaddstream = function(event) {
+        console.log(' *** addstream', event);
+        var audioElement = document.createElement("audio");
+        document.body.appendChild(audioElement);
+        audioElement.srcObject = event.stream;
+        audioElement.play();
+      };
+    },
+  };
+}
 
 function getCallEventHandlers () {
   return {
@@ -142,7 +157,7 @@ function callOn(ua, phone, config) {
   }
   
   var callOptions = {
-    eventHandlers: getCallEventHandlers(),
+    eventHandlers: getCallOutgoingEventHandlers(),
     ...getCallOptions(config),
   };
   console.log('call');
