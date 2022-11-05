@@ -137,7 +137,7 @@ function getCallOptions (config) {
     },
     pcConfig: {
       iceServers: splitStun(config.stun),
-      iceTransportPolicy: "relay",
+      iceTransportPolicy: "all",
     },
     rtcpMuxPolicy: 'negotiate',
     rtcOfferConstraints: {
